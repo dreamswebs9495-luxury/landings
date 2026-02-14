@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function App() {
+  // 1. La lógica debe estar AQUÍ ADENTRO
+  const [email, setEmail] = useState("");
+
+  const handleRegistro = async (e) => {
+    e.preventDefault();
+    try {
+      const respuesta = await fetch("http://localhost:8000/registro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+      });
+      const data = await respuesta.json();
+      alert(data.mensaje);
+      setEmail(""); // Limpia el campo después de enviar
+    } catch (error) {
+      alert("Error: ¿Encendiste el servidor de Python?");
+    }
+  };
+
+  // 2. El diseño (return) viene después de la lógica
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30">
       {/* Navbar */}
@@ -35,13 +55,21 @@ export default function App() {
             Estructuras modulares, carga ultra rápida y diseño de alta conversión. 
             El pilar tecnológico para tu próximo gran evento ya está aquí.
           </p>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
-              Crear mi Landing
-            </button>
-            <button className="bg-slate-900 border border-slate-800 hover:border-slate-700 px-8 py-4 rounded-2xl font-bold text-lg transition-all">
-              Ver Demo
-            </button>
+            <form onSubmit={handleRegistro} className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start w-full">
+              <input 
+                type="email" 
+                placeholder="Tu mejor email" 
+                className="bg-slate-900 border border-slate-700 px-6 py-4 rounded-2xl text-white focus:outline-none focus:border-cyan-500 transition-all w-full sm:w-80"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
+                Unirme ahora
+              </button>
+            </form>
           </div>
         </div>
 
